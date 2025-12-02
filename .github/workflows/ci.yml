@@ -13,5 +13,13 @@ jobs:
       - name: Checkout du dépôt
         uses: actions/checkout@v3
 
-      - name: Test simple
-        run: echo "Pipeline CI exécuté avec succès dans la branche dev !"
+      - name: Installer Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Installer HTMLHint (validateur HTML)
+        run: npm install -g htmlhint
+
+      - name: Vérification HTML
+        run: htmlhint .
