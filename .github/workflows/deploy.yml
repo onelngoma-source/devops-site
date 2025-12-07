@@ -11,37 +11,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
+      # 1️⃣ Checkout
       - name: Checkout repository
         uses: actions/checkout@v3
 
-    
+      # 2️⃣ Login Docker Hub
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
+      # 3️⃣ Build et push Docker image
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/devops-site:latest .
-
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/devops-site:latest
 
-   
+      # 4️⃣ Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.6.0
 
-   
+      # 5️⃣ Terraform init (fix PGP expiré)
       - name: Terraform Init
-        run: terraform init
+        run: |
+          export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"
+          export TF_VERIFY_PLUGIN_SIGNATURES="false"
+          terraform init
         working-directory: terraform
 
-     
+      # 6️⃣ Terraform apply
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: terraform
 
-    
+      # 7️⃣ (Optionnel) Deploy FTP
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.0.0
         with:
