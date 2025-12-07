@@ -34,7 +34,7 @@ jobs:
       # 5️⃣ Terraform init (fix PGP expiré)
       - name: Terraform Init
         run: |
-          export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin"
+          export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugins"
           export TF_VERIFY_PLUGIN_SIGNATURES="false"
           terraform init -upgrade
         working-directory: terraform
