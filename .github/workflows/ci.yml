@@ -18,8 +18,11 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Installer HTMLHint (validateur HTML)
+      - name: Installer HTMLHint
         run: npm install -g htmlhint
 
       - name: Vérification HTML
         run: htmlhint .
+
+      - name: Build de l'image Docker
+        run: docker build -t devops-site .
