@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout
+      # 1️⃣ Checkout du repo
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -31,9 +31,10 @@ jobs:
         with:
           terraform_version: 1.6.0
 
-      # 5️⃣ Terraform init (fix PGP expiré)
+      # 5️⃣ Terraform init avec fix plugin-cache et ignore PGP
       - name: Terraform Init
         run: |
+          mkdir -p $HOME/.terraform.d/plugins
           export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugins"
           export TF_VERIFY_PLUGIN_SIGNATURES="false"
           terraform init -upgrade
@@ -44,7 +45,7 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: terraform
 
-      # 7️⃣ (Optionnel) Deploy FTP
+      # 7️⃣ (Optionnel) Deploy via FTP
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.0.0
         with:
