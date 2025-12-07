@@ -37,7 +37,7 @@ jobs:
           mkdir -p $HOME/.terraform.d/plugins
           export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugins"
           export TF_VERIFY_PLUGIN_SIGNATURES="false"
-          terraform init 
+          terraform init -upgrade
         working-directory: terraform
 
       # 6️⃣ Terraform apply
