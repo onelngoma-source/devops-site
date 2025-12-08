@@ -2,24 +2,20 @@ terraform {
   required_providers {
     docker = {
       source  = "kreuzwerker/docker"
-      version = "~> 3.6.0"
+      version = "~> 3.6.2"
     }
   }
-  required_version = ">= 1.5.0"
 }
 
 provider "docker" {}
 
 resource "docker_image" "site" {
   name = "onelmelvy/devops-site:latest"
-  build {
-    context = "../" # dossier racine du projet contenant Dockerfile
-  }
 }
 
 resource "docker_container" "site" {
   name  = "devops-site-container"
-  image = docker_image.site.latest
+  image = docker_image.site.image_id
 
   ports {
     internal = 80

@@ -1,4 +1,4 @@
-name: CD Docker + Terraform + FTP
+name: Deploy Website (CD)
 
 on:
   push:
@@ -11,43 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Login Docker Hub
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-
-      # 3️⃣ Build Docker image
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/devops-site:latest .
-
-      # 4️⃣ Push Docker image
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/devops-site:latest
-
-      # 5️⃣ Setup Terraform
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.6.0
-
-      # 6️⃣ Terraform init avec fix plugin-cache et PGP expiré
-      - name: Terraform Init
-        run: |
-          mkdir -p $HOME/.terraform.d/plugins
-          export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugins"
-          export TF_VERIFY_PLUGIN_SIGNATURES=false
-          terraform init -upgrade
-        working-directory: terraform
-
-      # 7️⃣ Terraform apply
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-        working-directory: terraform
-
-      # 8️⃣ (Optionnel) Deploy via FTP
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.0.0
         with:
